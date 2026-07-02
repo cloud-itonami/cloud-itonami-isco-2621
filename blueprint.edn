@@ -1,0 +1,10 @@
+{:itonami.blueprint/id "cloud-itonami-isco-2621"
+ :itonami.blueprint/name "Independent Archival & Curatorial Practice"
+ :itonami.blueprint/isco-08 "2621"
+ :itonami.blueprint/domain :services/archival-curatorial
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:local-jobs :cultural-preservation :data-quality]
+ :itonami.blueprint/governor :archival-curatorial-governor
+ :itonami.blueprint/robotics true
+ :itonami.blueprint/required-technologies [:robotics :forms :identity :audit-ledger :bpmn]
+ :itonami.blueprint/status :public-oss}
