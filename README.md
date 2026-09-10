@@ -60,17 +60,17 @@ human-in-the-loop interrupt/resume via checkpointing.
                                            +-> :hold               (:hard? true)
 ```
 
-- `src/archival_curatorial/store.cljc` — `Store` protocol +
+- `src/archival_curatorial/store.kotoba` — `Store` protocol +
   `MemStore`: registered items, committed records, an append-only
   audit ledger.
-- `src/archival_curatorial/advisor.cljc` — `Advisor` protocol;
+- `src/archival_curatorial/advisor.kotoba` — `Advisor` protocol;
   `mock-advisor` (deterministic, default) proposes a collection
   operation from a request; `llm-advisor` wraps a
   `langchain.model/ChatModel` — either way the advisor only ever
   produces a `:propose`-effect proposal, never a committed record, and
   LLM parse failures always yield `confidence 0.0` (forces escalation,
   never fabricated confidence).
-- `src/archival_curatorial/governor.cljc` —
+- `src/archival_curatorial/governor.kotoba` —
   `ArchivalCuratorialGovernor/check`: a pure function, wired as its
   own `:govern` node. Hard invariants (unregistered item, a proposal
   whose `:effect` isn't `:propose`) always route to `:hold`. Escalation
@@ -81,7 +81,7 @@ human-in-the-loop interrupt/resume via checkpointing.
   robotics-premise statement that deaccessioning an item and releasing
   a restricted collection item for public access always require human
   sign-off.
-- `src/archival_curatorial/actor.cljc` — `build-graph`,
+- `src/archival_curatorial/actor.kotoba` — `build-graph`,
   `run-request!`, `approve!`: the `langgraph.graph/state-graph` wiring
   itself.
 
