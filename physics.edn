@@ -1,0 +1,43 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a collection-handling robot performs physical
+;; item retrieval and environmental-condition sensing in storage areas
+;; (ISCO 2621, archivists and curators). Its physical work: retrieving
+;; archival boxes from high shelving, carrying them to the reading room, and
+;; watching how fast the store's exterior wall lets summer heat in when the
+;; climate control fails.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-2621"
+ :cases
+ [{:id :archival-box-from-high-shelf
+   :kind :manipulator
+   :procedure "arm retrieves an archival box from the top shelf of the store and lowers it onto the retrieval cart"
+   :params {:l1-m 0.55 :l2-m 0.50 :m1-kg 6.0 :m2-kg 4.0
+            :from [0.30 0.95] :to [0.65 0.00] :duration-s 3.0 :steps 500}
+   :sweep {:param :payload-kg :values [2.0 5.0 8.0 11.0 14.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 150.0 :basis "estimate: continuous shoulder torque of a 10 kg-payload class collaborative arm"}
+   :boundary {:lo 0.5 :hi 60.0}}
+  {:id :box-to-reading-room
+   :kind :transport
+   :procedure "AMR carries retrieved archival boxes from the store to the reading room, gently"
+   :params {:mass-kg 45.0 :payload-kg 25.0 :distance-m 60.0 :v-max-mps 0.7 :a-max-mps2 0.2
+            :drive-force-n 80.0 :crr 0.02 :cog-height-m 0.70 :support-half-length-m 0.25}
+   :sweep {:param :brake-decel-mps2 :values [0.2 0.4 0.8 1.2 1.6]}
+   :quantity :min-tipover-margin
+   :limit {:min 0.7 :basis "estimate: fragile bound volumes ride on the cart; keep 70 % tip-over reserve so boxes do not shift on stops"}
+   :boundary {:lo 0.1 :hi 2.5}}
+  {:id :store-wall-hvac-outage
+   :kind :thermal
+   :procedure "concrete exterior wall of the archive store during a 24-hour climate-control outage on a 35 C summer day"
+   :params {:conductivity-w-mk 1.4 :density-kg-m3 2300.0 :specific-heat-j-kgk 880.0
+            :t0-c 18.0 :t-hot-c 35.0 :h-front-w-m2k 25.0 :t-back-ambient-c 18.0 :h-back-w-m2k 8.0
+            :threshold-c 23.0 :duration-s 86400.0 :nodes 21}
+   :sweep {:param :thickness-m :values [0.10 0.15 0.20 0.30 0.40]}
+   :quantity :final-back-c
+   :limit {:max 23.0 :basis "estimate: inner wall face kept within 5 C of the 18 C set point; the sourced value would come from ISO 11799 (document storage requirements for archive and library materials)"}
+   :boundary {:lo 0.05 :hi 0.60}}]}
